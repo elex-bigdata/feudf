@@ -18,6 +18,7 @@ import com.elex.ssp.QueryUtils;
 public class KeyWord extends GenericUDTF {
 	
 	List<String> keywords;
+	Object result[] = new Object[1];
 
 	@Override
 	public StructObjectInspector initialize(ObjectInspector[] argOIs)
@@ -35,8 +36,9 @@ public class KeyWord extends GenericUDTF {
 
 		try {
 			keywords = WordSeder.sed(QueryUtils.normalize(args[0].toString()));
-			for(Object word:keywords){
-				forward(word);
+			for(String word:keywords){
+				result[0]=word;
+				forward(result);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -45,7 +47,7 @@ public class KeyWord extends GenericUDTF {
 
 	@Override
 	public void close() throws HiveException {
-		keywords.clear();
+
 	}
 
 
