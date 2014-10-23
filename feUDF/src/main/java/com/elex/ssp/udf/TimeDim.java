@@ -16,16 +16,14 @@ import com.elex.ssp.TimeUtils;
 
 public class TimeDim extends GenericUDTF {
 	
-	Object hour;
-	Object workOrVaction;
-	Object dayPart;
+	String hour;
+	String workOrVaction;
+	String dayPart;
 
 	 
 	  @Override
 	  public void close() throws HiveException {
-		  hour=null;
-		  workOrVaction=null;
-		  dayPart=null;
+
 	  }
 	 
 	  @Override
@@ -33,7 +31,7 @@ public class TimeDim extends GenericUDTF {
 	    ArrayList<String> fieldNames = new ArrayList<String>();
 	    ArrayList<ObjectInspector> fieldOIs = new ArrayList<ObjectInspector>();
 	    fieldNames.add("col1");
-	    fieldOIs.add(PrimitiveObjectInspectorFactory.writableStringObjectInspector);
+	    fieldOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector);
 	    return ObjectInspectorFactory.getStandardStructObjectInspector(fieldNames,
 	fieldOIs);
 	  }
@@ -46,9 +44,9 @@ public class TimeDim extends GenericUDTF {
 			hour = TimeUtils.getHour(day);
 			dayPart = TimeUtils.getDayPart(day);
 			workOrVaction = TimeUtils.isWorkOrVacation(day);
-			forward(hour);
-			forward(dayPart);
-			forward(workOrVaction);
+			forward((Object)hour);
+			forward((Object)dayPart);
+			forward((Object)workOrVaction);
 			
 		} catch (ParseException e) {
 			e.printStackTrace();

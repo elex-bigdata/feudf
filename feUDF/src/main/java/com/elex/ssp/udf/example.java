@@ -22,9 +22,6 @@ public class example extends GenericUDTF {
  
   @Override
   public void close() throws HiveException {
-    forwardObj[0] = count;
-    forward(forwardObj);
-    forward(forwardObj);
   }
  
   @Override
@@ -40,6 +37,8 @@ public class example extends GenericUDTF {
   @Override
   public void process(Object[] args) throws HiveException {
     count = Integer.valueOf(count.intValue() + 1);
+    forwardObj[0] = count;
+    forward(forwardObj);
   }
  
 }
