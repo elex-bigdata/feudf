@@ -26,7 +26,7 @@ public class KeyWord extends GenericUDTF {
 		ArrayList<String> fieldNames = new ArrayList<String>();
 	    ArrayList<ObjectInspector> fieldOIs = new ArrayList<ObjectInspector>();
 	    fieldNames.add("col1");
-	    fieldOIs.add(PrimitiveObjectInspectorFactory.writableStringObjectInspector);
+	    fieldOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector);
 	    return ObjectInspectorFactory.getStandardStructObjectInspector(fieldNames,
 	        fieldOIs);
 	}
