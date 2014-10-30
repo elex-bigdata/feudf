@@ -109,7 +109,11 @@ public class GroupConcat extends UDAF {
       Collections.sort(data);
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < data.size(); i++) {
-        sb.append(data.get(i));
+    	  sb.append(data.get(i));
+    	  if(i!=data.size()-1){
+    		 sb.append(":"); 
+    	  }
+        
       }
       return sb.toString();
     }
