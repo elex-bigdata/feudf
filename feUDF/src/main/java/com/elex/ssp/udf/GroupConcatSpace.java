@@ -36,8 +36,7 @@ import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
  * implement built-in aggregation functions, which are harder to program but
  * more efficient.
  */
-@Description(name = "example_group_concat",
-value = "_FUNC_(col) - Example UDAF that concatenates all arguments from different rows into a single string")
+
 public class GroupConcatSpace extends UDAF {
 
   /**
