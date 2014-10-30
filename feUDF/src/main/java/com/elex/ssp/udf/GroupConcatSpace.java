@@ -38,7 +38,7 @@ import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
  */
 @Description(name = "example_group_concat",
 value = "_FUNC_(col) - Example UDAF that concatenates all arguments from different rows into a single string")
-public class GroupConcat extends UDAF {
+public class GroupConcatSpace extends UDAF {
 
   /**
    * The actual class for doing the aggregation. Hive will automatically look
@@ -111,7 +111,7 @@ public class GroupConcat extends UDAF {
       for (int i = 0; i < data.size(); i++) {
     	  sb.append(data.get(i));
     	  if(i!=data.size()-1){
-    		 sb.append(":"); 
+    		 sb.append(" "); 
     	  }
         
       }
