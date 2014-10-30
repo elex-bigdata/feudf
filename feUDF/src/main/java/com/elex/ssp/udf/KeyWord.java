@@ -35,15 +35,24 @@ public class KeyWord extends GenericUDTF {
 	public void process(Object[] args) throws HiveException {
 
 		try {
-			if(QueryUtils.normalize(args[0].toString())==null || args[0]==null){
+			if(args.length != 1){
 				
 			}else{
-				keywords = WordSeder.sed(QueryUtils.normalize(args[0].toString()));
-				for(String word:keywords){
-					result[0]=word;
-					forward(result);
-				}
+				if(args[0]==null){
+					
+				}else{
+					if(QueryUtils.normalize(args[0].toString())==null){
+						
+					}else{
+						keywords = WordSeder.sed(QueryUtils.normalize(args[0].toString()));
+						for(String word:keywords){
+							result[0]=word;
+							forward(result);
+						}
+					}
+				}				
 			}
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
