@@ -74,7 +74,7 @@ public class MyConcat extends UDAF {
      */
     public boolean iterate(String o,String split,String pbId) {
       if (o != null) {
-    	  if(o.trim().equals(pbId)){
+    	  if(!o.trim().equals(pbId)){
     		  data.add(o+split);
     	  }
     	       
@@ -97,7 +97,7 @@ public class MyConcat extends UDAF {
      * 
      * This function should always return true.
      */
-    public boolean merge(ArrayList<String> o) {
+    public boolean merge(HashSet<String> o) {
       if (o != null) {
         data.addAll(o);
       }
