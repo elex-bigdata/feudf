@@ -40,7 +40,7 @@ public class ChooseDt extends UDAF {
 
 	public static class UDAFState {
 		private ArrayList<String> data = new ArrayList<String>();
-		private String pb=null;
+		private String pb = null;
 	}
 	/**
 	 * The actual class for doing the aggregation. Hive will automatically look

@@ -20,9 +20,6 @@ package com.elex.ssp.udf;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
@@ -40,6 +37,12 @@ import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
  */
 
 public class ChooseAdid extends UDAF {
+	
+	static class UDAFState {
+		private ArrayList<String> data = new ArrayList<String>();
+		private String passBackId = null;
+		private String split;
+	}
 
   /**
    * The actual class for doing the aggregation. Hive will automatically look
@@ -47,20 +50,21 @@ public class ChooseAdid extends UDAF {
    */
   public static class UDAFExampleGroupConcatEvaluator implements UDAFEvaluator {
 
-    private ArrayList<String> data;
-    private String split;
-    private String passBackId;
+	  UDAFState state;
 
     public UDAFExampleGroupConcatEvaluator() {
       super();
-      data = new ArrayList<String>();
+      state = new UDAFState();
+      init();
     }
 
     /**
      * Reset the state of the aggregation.
      */
     public void init() {
-      data.clear();
+    	state.data.clear();
+    	state.split= null;
+    	state.passBackId = null;
     }
 
     /**
@@ -73,11 +77,11 @@ public class ChooseAdid extends UDAF {
      * This function should always return true.
      */
     public boolean iterate(String o,String sed,String pbId) {
-    split = sed;
-    passBackId= pbId;
+    	state.split = sed;
+    	state.passBackId= pbId;
       if (o != null) {
     	  if(!o.trim().equals(pbId.trim())){
-    		  data.add(o+sed);
+    		  state.data.add(o+sed);
     	  }
     	       
       }
@@ -87,8 +91,8 @@ public class ChooseAdid extends UDAF {
     /**
      * Terminate a partial aggregation and return the state.
      */
-    public ArrayList<String> terminatePartial() {
-      return data;
+    public UDAFState terminatePartial() {
+      return state;
     }
 
     /**
@@ -99,9 +103,11 @@ public class ChooseAdid extends UDAF {
      * 
      * This function should always return true.
      */
-    public boolean merge(ArrayList<String> o) {
+    public boolean merge(UDAFState o) {
       if (o != null) {
-        data.addAll(o);
+        state.data.addAll(o.data);
+        state.passBackId=o.passBackId;
+        state.split=o.split;
       }
       return true;
     }
@@ -127,12 +133,12 @@ public class ChooseAdid extends UDAF {
       }
       
       return sb.toString();*/
-    	Collections.sort(data);
-    	if(data != null){
-    		if(data.size()>0){
-    			return data.get(0);
+    	Collections.sort( state.data);
+    	if( state.data != null){
+    		if( state.data.size()>0){
+    			return  state.data.get(0);
     		}else{
-    			return passBackId;
+    			return  state.passBackId;
     		}   		
     	}
     	return null;
