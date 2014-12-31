@@ -20,6 +20,8 @@ package com.elex.ssp.udf;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDAF;
@@ -45,11 +47,13 @@ public class MyConcat extends UDAF {
    */
   public static class UDAFExampleGroupConcatEvaluator implements UDAFEvaluator {
 
-    ArrayList<String> data;
+    HashSet<String> data;
+    String split;
 
     public UDAFExampleGroupConcatEvaluator() {
       super();
-      data = new ArrayList<String>();
+      data = new HashSet<String>();
+      split = null;
     }
 
     /**
@@ -68,9 +72,12 @@ public class MyConcat extends UDAF {
      * 
      * This function should always return true.
      */
-    public boolean iterate(String o,String split) {
+    public boolean iterate(String o,String split,String pbId) {
       if (o != null) {
-    	  data.add(o+split);     
+    	  if(o.trim().equals(pbId)){
+    		  data.add(o+split);
+    	  }
+    	       
       }
       return true;
     }
@@ -78,7 +85,7 @@ public class MyConcat extends UDAF {
     /**
      * Terminate a partial aggregation and return the state.
      */
-    public ArrayList<String> terminatePartial() {
+    public HashSet<String> terminatePartial() {
       return data;
     }
 
@@ -101,11 +108,17 @@ public class MyConcat extends UDAF {
      * Terminates the aggregation and return the final result.
      */
     public String terminate() {
-      Collections.sort(data);
       StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < data.size(); i++) {
-    	  sb.append(data.get(i));       
+      Iterator<String> ite = data.iterator();
+      while(ite.hasNext()){
+    	 sb.append(ite.next());
       }
+      if(split != null){
+    	  if(!split.equals("")){
+    		  return sb.toString().substring(0,sb.toString().lastIndexOf(split));
+    	  }
+      }
+      
       return sb.toString();
     }
   }
