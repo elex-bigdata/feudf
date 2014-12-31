@@ -76,7 +76,7 @@ public class ChooseAdid extends UDAF {
     split = sed;
     passBackId= pbId;
       if (o != null) {
-    	  if(!o.trim().equals(pbId)){
+    	  if(!o.trim().equals(pbId.trim())){
     		  data.add(o+sed);
     	  }
     	       
