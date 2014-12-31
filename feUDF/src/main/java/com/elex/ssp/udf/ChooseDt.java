@@ -73,7 +73,7 @@ public class ChooseDt extends UDAF {
 		 */
 		public boolean iterate(String o, String sed, String dt) {
 			//split = sed;
-			if (o != null && pb != null) {
+			if (o != null) {
 				if (o.trim().equals(dt.trim())) {
 					pb = dt;
 					return true;
