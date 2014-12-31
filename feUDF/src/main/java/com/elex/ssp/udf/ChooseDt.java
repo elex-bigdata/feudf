@@ -38,6 +38,10 @@ import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 
 public class ChooseDt extends UDAF {
 
+	public static class UDAFState {
+		private ArrayList<String> data = new ArrayList<String>();
+		private String pb=null;
+	}
 	/**
 	 * The actual class for doing the aggregation. Hive will automatically look
 	 * for all internal classes of the UDAF that implements UDAFEvaluator.
@@ -45,21 +49,20 @@ public class ChooseDt extends UDAF {
 	public static class UDAFExampleGroupConcatEvaluator implements
 			UDAFEvaluator {
 
-		private ArrayList<String> data;
-		//private String split;
-		private String pb;
+		UDAFState state;  
 
 		public UDAFExampleGroupConcatEvaluator() {
 			super();
-			data = new ArrayList<String>();
-			pb = null;
+			state = new UDAFState(); 
+			init();
 		}
 
 		/**
 		 * Reset the state of the aggregation.
 		 */
 		public void init() {
-			data.clear();
+			state.data.clear();
+			state.pb= null;
 		}
 
 		/**
@@ -71,14 +74,14 @@ public class ChooseDt extends UDAF {
 		 * 
 		 * This function should always return true.
 		 */
-		public boolean iterate(String o, String sed, String dt) {
+		public boolean iterate(String o,String dt) {
 			//split = sed;
 			if (o != null) {
 				if (o.trim().equals(dt.trim())) {
-					pb = dt;
+					state.pb = dt;
 					return true;
 				}else if (!o.trim().equals(dt)) {
-					data.add(o + sed);
+					state.data.add(o.trim());
 				}
 
 			}
@@ -88,8 +91,8 @@ public class ChooseDt extends UDAF {
 		/**
 		 * Terminate a partial aggregation and return the state.
 		 */
-		public ArrayList<String> terminatePartial() {
-			return data;
+		public UDAFState terminatePartial() {
+			return state;
 		}
 
 		/**
@@ -100,9 +103,12 @@ public class ChooseDt extends UDAF {
 		 * 
 		 * This function should always return true.
 		 */
-		public boolean merge(ArrayList<String> o) {
+		public boolean merge(UDAFState o) {
 			if (o != null) {
-				data.addAll(o);
+				state.data.addAll(o.data);
+				if(o.pb != null){
+					state.pb = o.pb;
+				}
 			}
 			return true;
 		}
@@ -111,25 +117,12 @@ public class ChooseDt extends UDAF {
 		 * Terminates the aggregation and return the final result.
 		 */
 		public String terminate() {
-			// 以下代码块实现按传入的sed参数concat参数o，并对o去重并去掉pbID然后输出。
-			/*
-			 * StringBuilder sb = new StringBuilder(); Set<String> ret = new
-			 * HashSet<String>(); ret.addAll(data); Iterator<String> ite =
-			 * ret.iterator();
-			 * 
-			 * while(ite.hasNext()){ sb.append(ite.next()); }
-			 * 
-			 * if(split != null){ if(!split.equals("")){ return
-			 * sb.toString().substring(0,sb.toString().lastIndexOf(split)); } }
-			 * 
-			 * return sb.toString();
-			 */
-			Collections.sort(data);
-			if(pb != null){
-				return pb;
-			}else if (data != null) {
-				if (data.size() > 0) {
-					return data.get(0);
+			Collections.sort(state.data);
+			if(state.pb != null){
+				return state.pb;
+			}else if (state.data != null) {
+				if (state.data.size() > 0) {
+					return state.data.get(0);
 				}
 			}
 			return null;
