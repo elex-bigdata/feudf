@@ -19,11 +19,10 @@
 package com.elex.ssp.udf;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
-import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 
@@ -39,7 +38,7 @@ import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
  * more efficient.
  */
 
-public class MyConcat extends UDAF {
+public class CAdid extends UDAF {
 
   /**
    * The actual class for doing the aggregation. Hive will automatically look
@@ -47,12 +46,12 @@ public class MyConcat extends UDAF {
    */
   public static class UDAFExampleGroupConcatEvaluator implements UDAFEvaluator {
 
-    HashSet<String> data;
-    String split;
+    private ArrayList<String> data;
+    private String split;
 
     public UDAFExampleGroupConcatEvaluator() {
       super();
-      data = new HashSet<String>();
+      data = new ArrayList<String>();
       split = null;
     }
 
@@ -85,7 +84,7 @@ public class MyConcat extends UDAF {
     /**
      * Terminate a partial aggregation and return the state.
      */
-    public HashSet<String> terminatePartial() {
+    public ArrayList<String> terminatePartial() {
       return data;
     }
 
@@ -97,7 +96,7 @@ public class MyConcat extends UDAF {
      * 
      * This function should always return true.
      */
-    public boolean merge(HashSet<String> o) {
+    public boolean merge(ArrayList<String> o) {
       if (o != null) {
         data.addAll(o);
       }
@@ -109,10 +108,14 @@ public class MyConcat extends UDAF {
      */
     public String terminate() {
       StringBuilder sb = new StringBuilder();
-      Iterator<String> ite = data.iterator();
+      Set<String> ret = new HashSet<String>();
+      ret.addAll(data);
+      Iterator<String> ite = ret.iterator();
+      
       while(ite.hasNext()){
     	 sb.append(ite.next());
       }
+      
       if(split != null){
     	  if(!split.equals("")){
     		  return sb.toString().substring(0,sb.toString().lastIndexOf(split));
@@ -121,6 +124,9 @@ public class MyConcat extends UDAF {
       
       return sb.toString();
     }
+    
   }
+  
+  
 
 }
