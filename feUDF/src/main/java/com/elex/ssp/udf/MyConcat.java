@@ -68,13 +68,9 @@ public class MyConcat extends UDAF {
      * 
      * This function should always return true.
      */
-    public boolean iterate(String[] o,String split) {
+    public boolean iterate(String o,String split) {
       if (o != null) {
-        StringBuilder sb = new StringBuilder();
-        for (String element : o) {
-          sb.append(element);
-        }
-        data.add(sb.toString()+split);
+    	  data.add(o+split);     
       }
       return true;
     }
