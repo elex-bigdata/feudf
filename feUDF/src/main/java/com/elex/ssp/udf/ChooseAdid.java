@@ -41,7 +41,6 @@ public class ChooseAdid extends UDAF {
 	static class UDAFState {
 		private ArrayList<String> data = new ArrayList<String>();
 		private String passBackId = null;
-		private String split;
 	}
 
   /**
@@ -63,7 +62,6 @@ public class ChooseAdid extends UDAF {
      */
     public void init() {
     	state.data.clear();
-    	state.split= null;
     	state.passBackId = null;
     }
 
@@ -76,12 +74,11 @@ public class ChooseAdid extends UDAF {
      * 
      * This function should always return true.
      */
-    public boolean iterate(String o,String sed,String pbId) {
-    	state.split = sed;
+    public boolean iterate(String o,String pbId) {
     	state.passBackId= pbId;
       if (o != null) {
     	  if(!o.trim().equals(pbId.trim())){
-    		  state.data.add(o+sed);
+    		  state.data.add(o);
     	  }
     	       
       }
@@ -107,7 +104,6 @@ public class ChooseAdid extends UDAF {
       if (o != null) {
         state.data.addAll(o.data);
         state.passBackId=o.passBackId;
-        state.split=o.split;
       }
       return true;
     }
@@ -116,24 +112,7 @@ public class ChooseAdid extends UDAF {
      * Terminates the aggregation and return the final result.
      */
     public String terminate() {
-    //以下代码块实现按传入的sed参数concat参数o，并对o去重并去掉pbID然后输出。
-      /*StringBuilder sb = new StringBuilder();
-      Set<String> ret = new HashSet<String>();
-      ret.addAll(data);
-      Iterator<String> ite = ret.iterator();
-      
-      while(ite.hasNext()){
-    	 sb.append(ite.next());
-      }
-      
-      if(split != null){
-    	  if(!split.equals("")){
-    		  return sb.toString().substring(0,sb.toString().lastIndexOf(split));
-    	  }
-      }
-      
-      return sb.toString();*/
-    	Collections.sort( state.data);
+    	Collections.sort(state.data);
     	if( state.data != null){
     		if( state.data.size()>0){
     			return  state.data.get(0);
@@ -141,7 +120,7 @@ public class ChooseAdid extends UDAF {
     			return  state.passBackId;
     		}   		
     	}
-    	return null;
+    	return state.passBackId;
     }
     
   }

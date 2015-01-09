@@ -125,7 +125,7 @@ public class ChooseDt extends UDAF {
 					return state.data.get(0);
 				}
 			}
-			return null;
+			return "default";
 		}
 
 	}
