@@ -10,11 +10,13 @@ public class IPDim extends UDF {
 	
 	public static String getArea(String ip){
 		String area = null;
-		
+
+		String[] ip_seg;
 		if(ip != null){
 			if(!ip.trim().equals("")){
-				if(ip.split("\\.").length==4){
-					area = ip.substring(0, ip.lastIndexOf("."));
+				ip_seg=ip.split("\\.");
+				if(ip_seg.length>=2){
+					area = ip_seg[0]+"."+ip_seg[1];
 				}else{
 					area=ip;
 				}
