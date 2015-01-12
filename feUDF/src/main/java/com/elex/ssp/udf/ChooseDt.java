@@ -24,6 +24,8 @@ import java.util.Collections;
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 
+import com.elex.ssp.PropertiesUtils;
+
 /**
  * This is a simple UDAF that concatenates all arguments from different rows
  * into a single string.
@@ -40,7 +42,7 @@ public class ChooseDt extends UDAF {
 
 	public static class UDAFState {
 		private ArrayList<String> data = new ArrayList<String>();
-		private String pb = null;
+		private String pb = "default";
 	}
 	/**
 	 * The actual class for doing the aggregation. Hive will automatically look
@@ -50,6 +52,7 @@ public class ChooseDt extends UDAF {
 			UDAFEvaluator {
 
 		UDAFState state;  
+		String[] passBackTags;
 
 		public UDAFExampleGroupConcatEvaluator() {
 			super();
@@ -62,7 +65,7 @@ public class ChooseDt extends UDAF {
 		 */
 		public void init() {
 			state.data.clear();
-			state.pb= null;
+			passBackTags= PropertiesUtils.getPbTags();
 		}
 
 		/**
@@ -74,15 +77,16 @@ public class ChooseDt extends UDAF {
 		 * 
 		 * This function should always return true.
 		 */
-		public boolean iterate(String o,String dt) {
-			//split = sed;
+		public boolean iterate(String o) {
 			if (o != null) {
-				if (o.trim().equals(dt.trim())) {
-					state.pb = dt;
-					return true;
-				}else if (!o.trim().equals(dt)) {
-					state.data.add(o.trim());
+				for(String tag:passBackTags){
+					if (!o.trim().equals(tag)) {
+						state.data.add(o.trim());
+					}else{
+						state.pb=o;
+					}
 				}
+				
 
 			}
 			return true;
@@ -118,14 +122,14 @@ public class ChooseDt extends UDAF {
 		 */
 		public String terminate() {
 			Collections.sort(state.data);
-			if(state.pb != null){
+			if(!state.pb.endsWith("default")){
 				return state.pb;
 			}else if (state.data != null) {
 				if (state.data.size() > 0) {
 					return state.data.get(0);
 				}
 			}
-			return "default";
+			return state.pb;
 		}
 
 	}

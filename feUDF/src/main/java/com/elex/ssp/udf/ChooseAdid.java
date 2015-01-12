@@ -24,6 +24,8 @@ import java.util.Collections;
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 
+import com.elex.ssp.PropertiesUtils;
+
 /**
  * This is a simple UDAF that concatenates all arguments from different rows
  * into a single string.
@@ -40,7 +42,7 @@ public class ChooseAdid extends UDAF {
 	
 	static class UDAFState {
 		private ArrayList<String> data = new ArrayList<String>();
-		private String passBackId = null;
+		private String origId;
 	}
 
   /**
@@ -49,6 +51,7 @@ public class ChooseAdid extends UDAF {
    */
   public static class UDAFExampleGroupConcatEvaluator implements UDAFEvaluator {
 
+	  String[] passBackIds;
 	  UDAFState state;
 
     public UDAFExampleGroupConcatEvaluator() {
@@ -62,7 +65,7 @@ public class ChooseAdid extends UDAF {
      */
     public void init() {
     	state.data.clear();
-    	state.passBackId = null;
+    	passBackIds = PropertiesUtils.getPbIDs();
     }
 
     /**
@@ -74,12 +77,15 @@ public class ChooseAdid extends UDAF {
      * 
      * This function should always return true.
      */
-    public boolean iterate(String o,String pbId) {
-    	state.passBackId= pbId;
+    public boolean iterate(String o) {
+    	state.origId=o;
       if (o != null) {
-    	  if(!o.trim().equals(pbId.trim())){
-    		  state.data.add(o);
+    	  for(String pbid:passBackIds){
+    		  if(!o.trim().equals(pbid)){
+        		  state.data.add(o);
+        	  } 
     	  }
+    	  
     	       
       }
       return true;
@@ -103,7 +109,7 @@ public class ChooseAdid extends UDAF {
     public boolean merge(UDAFState o) {
       if (o != null) {
         state.data.addAll(o.data);
-        state.passBackId=o.passBackId;
+        state.origId=o.origId;
       }
       return true;
     }
@@ -117,10 +123,10 @@ public class ChooseAdid extends UDAF {
     		if( state.data.size()>0){
     			return  state.data.get(0);
     		}else{
-    			return  state.passBackId;
+    			return  state.origId;
     		}   		
     	}
-    	return state.passBackId;
+    	return state.origId;
     }
     
   }
