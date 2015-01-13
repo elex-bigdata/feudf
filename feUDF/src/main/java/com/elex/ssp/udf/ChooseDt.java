@@ -42,7 +42,7 @@ public class ChooseDt extends UDAF {
 
 	public static class UDAFState {
 		private ArrayList<String> data = new ArrayList<String>();
-		private String pb = "default";
+		private String pb;
 	}
 	/**
 	 * The actual class for doing the aggregation. Hive will automatically look
@@ -122,14 +122,14 @@ public class ChooseDt extends UDAF {
 		 */
 		public String terminate() {
 			Collections.sort(state.data);
-			if(!state.pb.endsWith("default")){
+			if(state.pb != null){
 				return state.pb;
 			}else if (state.data != null) {
 				if (state.data.size() > 0) {
 					return state.data.get(0);
 				}
 			}
-			return state.pb;
+			return "default";
 		}
 
 	}
