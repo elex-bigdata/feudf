@@ -109,7 +109,10 @@ public class ChooseAdid extends UDAF {
     public boolean merge(UDAFState o) {
       if (o != null) {
         state.data.addAll(o.data);
-        state.origId=o.origId;
+        if(o.origId != null){
+        	state.origId=o.origId;
+        }
+        
       }
       return true;
     }
