@@ -42,7 +42,7 @@ public class ChooseAdid extends UDAF {
 	
 	static class UDAFState {
 		private ArrayList<String> data = new ArrayList<String>();
-		private String origId;
+		private String origId=null;
 	}
 
   /**
@@ -51,7 +51,7 @@ public class ChooseAdid extends UDAF {
    */
   public static class UDAFExampleGroupConcatEvaluator implements UDAFEvaluator {
 
-	  String[] passBackIds;
+	  String[] passBackIds = PropertiesUtils.getPbIDs();;
 	  UDAFState state;
 
     public UDAFExampleGroupConcatEvaluator() {
@@ -65,7 +65,7 @@ public class ChooseAdid extends UDAF {
      */
     public void init() {
     	state.data.clear();
-    	passBackIds = PropertiesUtils.getPbIDs();
+    	state.origId=null;
     }
 
     /**
@@ -125,9 +125,7 @@ public class ChooseAdid extends UDAF {
     	if( state.data != null){
     		if( state.data.size()>0){
     			return  state.data.get(0);
-    		}else{
-    			return  state.origId;
-    		}   		
+    		}  		
     	}
     	return state.origId;
     }

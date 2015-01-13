@@ -42,7 +42,7 @@ public class ChooseDt extends UDAF {
 
 	public static class UDAFState {
 		private ArrayList<String> data = new ArrayList<String>();
-		private String pb;
+		private String pb=null;
 	}
 	/**
 	 * The actual class for doing the aggregation. Hive will automatically look
@@ -52,7 +52,7 @@ public class ChooseDt extends UDAF {
 			UDAFEvaluator {
 
 		UDAFState state;  
-		String[] passBackTags;
+		String[] passBackTags = PropertiesUtils.getPbTags();
 
 		public UDAFExampleGroupConcatEvaluator() {
 			super();
@@ -65,7 +65,7 @@ public class ChooseDt extends UDAF {
 		 */
 		public void init() {
 			state.data.clear();
-			passBackTags= PropertiesUtils.getPbTags();
+			state.pb = null;
 		}
 
 		/**
