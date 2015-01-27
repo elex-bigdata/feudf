@@ -36,21 +36,25 @@ public class TimeDim extends GenericUDTF {
 
 	@Override
 	public void process(Object[] args) throws HiveException {
-		
-		
-		String[] myArgs = { args[0].toString(), args[1].toString() };
-		try {
-			Date day = TimeUtils.getTimeByNation(myArgs);
-			hour[0] = TimeUtils.getHour(day);
-			dayPart[0] = TimeUtils.getDayPart(day);
-			workOrVaction[0] = TimeUtils.isWorkOrVacation(day);
-			forward(hour);
-			forward(dayPart);
-			forward(workOrVaction);
+		if(args.length==2){
+			if(args[0]!=null && args[1]!=null){
+				String[] myArgs = { args[0].toString(), args[1].toString() };
+				
+					Date day = TimeUtils.getTimeByNation(myArgs);
+					hour[0] = TimeUtils.getHour(day);
+					dayPart[0] = TimeUtils.getDayPart(day);
+					workOrVaction[0] = TimeUtils.isWorkOrVacation(day);
+					forward(hour);
+					forward(dayPart);
+					forward(workOrVaction);
 
-		} catch (ParseException e) {
-			e.printStackTrace();
+				
+			}
+			
 		}
+		
+		
+		
 	}
 
 }

@@ -65,7 +65,7 @@ public class ChooseDt extends UDAF {
 		 */
 		public void init() {
 			state.data.clear();
-			state.pb = null;
+			state.pb = null;//这句很重要
 		}
 
 		/**

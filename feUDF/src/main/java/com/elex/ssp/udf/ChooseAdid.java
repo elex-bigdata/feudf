@@ -65,7 +65,7 @@ public class ChooseAdid extends UDAF {
      */
     public void init() {
     	state.data.clear();
-    	state.origId=null;
+    	state.origId=null;//这句很重要
     }
 
     /**
