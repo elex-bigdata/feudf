@@ -80,7 +80,7 @@ public class ChooseDt extends UDAF {
 		public boolean iterate(String o) {
 			if (o != null) {
 				for(String tag:passBackTags){
-					if (!o.trim().equals(tag)) {
+					if (!o.trim().startsWith(tag)) {
 						state.data.add(o.trim());
 					}else{
 						state.pb=o;
