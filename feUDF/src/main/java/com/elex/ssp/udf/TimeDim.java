@@ -1,6 +1,5 @@
 package com.elex.ssp.udf;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
