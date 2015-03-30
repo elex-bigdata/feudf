@@ -39,7 +39,7 @@ public class PairID extends GenericUDTF {
 				
 			}else{
 				adids = args[0].toString().split(",");
-				camp_ids = args[0].toString().split(",");
+				camp_ids = args[1].toString().split(",");
 				
 				for(int i =0;i<Math.min(adids.length, camp_ids.length);i++){
 					result[0]=adids[i];
