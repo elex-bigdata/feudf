@@ -1,4 +1,4 @@
-package com.elex.ssp.udf;
+/*package com.elex.ssp.udf;
 
 import org.apache.hadoop.hive.ql.exec.UDF;
 
@@ -11,3 +11,4 @@ public class City extends UDF {
 	}
 
 }
+*/
